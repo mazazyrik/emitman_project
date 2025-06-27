@@ -6,13 +6,13 @@ from enum import Enum
 
 
 class ProgramName(str, Enum):
-    OPI = 'opi'
-    OMES = 'omes'
-    OE = 'oe'
-    ONE = 'one'
-    BI = 'bi'
-    ONLINE = 'online'
-    IT_MANAGMENT = 'it-management'
+    OPI = 'Отделение прикладной информатики'
+    OMES = 'Отделение международного экономического сотрудничества'
+    OE = 'Отделение экономики'
+    ONE = 'Отделение национальной экономики'
+    BI = 'Отдеделение бизнес-информатики'
+    ONLINE = 'Онлайн-программы'
+    IT_MANAGMENT = 'Школа IT-менеджмента'
 
 # models
 
@@ -42,4 +42,24 @@ class Admin(Model):
     is_superuser = fields.BooleanField(default=False)
 
     def __str__(self):
-        return self.username
+        return self.name
+
+
+class Teacher(Model):
+    id = fields.IntField(pk=True)
+    name = fields.CharField(max_length=50)
+    program = fields.CharEnumField(enum_type=ProgramName, null=False)
+    mail = fields.CharField(max_length=50, null=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Decanat(Model):
+    id = fields.IntField(pk=True)
+    name = fields.CharEnumField(enum_type=ProgramName, null=False)
+    contacts = fields.CharField(max_length=50, null=False)
+    teachers = fields.ForeignKeyField('db.Teacher', related_name='decanat')
+
+    def __str__(self):
+        return self.name
