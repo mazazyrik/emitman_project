@@ -52,7 +52,6 @@ class Teacher(Model):
     name = fields.CharField(max_length=50)
     program = fields.CharEnumField(enum_type=ProgramName, null=False)
     mail = fields.CharField(max_length=50, null=False)
-    decanat = fields.ForeignKeyField('db.Decanat', related_name='teachers')
 
     def __str__(self):
         return self.name
@@ -72,4 +71,3 @@ class Decanat(Model):
 class Group(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=50, null=False)
-    decanat = fields.ForeignKeyField('db.Decanat', related_name='groups')

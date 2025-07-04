@@ -3,10 +3,10 @@ from schemas.teacher_schemas import TeacherGetSchema
 from db import Decanat
 from schemas.decanat_schemas import DecanatGetSchema, DecanatGroupGetSchema
 
-router = APIRouter(prefix="/api/decanat", tags=["decanat"])
+router = APIRouter(prefix='/decanat', tags=['decanat'])
 
 
-@router.get("/all")
+@router.get('/all')
 async def get_decanats() -> DecanatGroupGetSchema:
     all_decs = await Decanat.all().prefetch_related('groups')
 
@@ -20,7 +20,7 @@ async def get_decanats() -> DecanatGroupGetSchema:
     return decs_with_groups_list
 
 
-@router.get("/all/{decanat_name}")
+@router.get('/all/{decanat_name}')
 async def get_decanat_with_group(decanat_name: str) -> DecanatGroupGetSchema:
     dec = await Decanat.get(name=decanat_name)
     return DecanatGroupGetSchema(
@@ -42,3 +42,18 @@ async def get_decanat(decanat_name: str) -> DecanatGetSchema:
             mail=teacher.mail
         ) for teacher in dec.teachers]
     )
+
+
+@router.post('/{decanat_name}')
+async def create_decanat(decanat_name: str):
+    return await Decanat.create(name=decanat_name)
+
+
+@router.delete('/{decanat_name}')
+async def delete_decanat(decanat_name: str):
+    return await Decanat.filter(name=decanat_name).delete()
+
+
+@router.put('/{decanat_name}')
+async def update_decanat(decanat_name: str):
+    return await Decanat.filter(name=decanat_name).update(name=decanat_name)

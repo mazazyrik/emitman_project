@@ -10,8 +10,8 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse
 
-
-from .db import Admin
+from routers.__init__ import core_router
+from db import Admin
 
 security = HTTPBasic()
 app = FastAPI(title='EMITMAN RANEPA')
@@ -24,7 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router()
+app.include_router(core_router, prefix='/api/v1', tags=['core'])
 
 
 @app.get("/docs", include_in_schema=False)
@@ -60,8 +60,8 @@ async def init():
 
 async def main():
     await init()
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
 
 if __name__ == "__main__":
     asyncio.run(main())
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)

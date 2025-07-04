@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from teacher_schemas import TeacherGetSchema
+from .teacher_schemas import TeacherGetSchema
 
 
 class GroupGetSchema(BaseModel):
