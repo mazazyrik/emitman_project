@@ -1,4 +1,5 @@
 import asyncio
+from contextlib import asynccontextmanager
 from typing import Annotated
 
 from tortoise import Tortoise
@@ -27,6 +28,21 @@ app.add_middleware(
 app.include_router(core_router, prefix='/api/v1', tags=['core'])
 
 
+async def init():
+    await Tortoise.init(
+        db_url='sqlite://db.sqlite3',
+        modules={'db': ['db']}
+    )
+    await Tortoise.generate_schemas()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init()
+    yield
+    await Tortoise.close_connections()
+
+
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html(
     request: Request,
@@ -50,18 +66,6 @@ async def custom_swagger_ui_html(
     return RedirectResponse(url="/")
 
 
-async def init():
-    await Tortoise.init(
-        db_url='sqlite://db.sqlite3',
-        modules={'db': ['db']}
-    )
-    await Tortoise.generate_schemas()
-
-
-async def main():
-    await init()
-
 if __name__ == "__main__":
-    asyncio.run(main())
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
