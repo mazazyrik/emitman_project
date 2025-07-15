@@ -31,7 +31,7 @@ class User(Model):
     brs_rate = fields.IntField(default=0)
 
     def __str__(self):
-        return self.username
+        return f"{self.name} {self.surname}"
 
 
 class Admin(Model):
@@ -47,22 +47,21 @@ class Admin(Model):
         return self.name
 
 
-class Teacher(Model):
+class Decanat(Model):
     id = fields.IntField(pk=True)
-    name = fields.CharField(max_length=50)
-    program = fields.CharEnumField(enum_type=ProgramName, null=False)
-    mail = fields.CharField(max_length=50, null=False)
+    name = fields.CharEnumField(enum_type=ProgramName, null=False)
+    contacts = fields.CharField(max_length=50, null=False)
 
     def __str__(self):
         return self.name
 
 
-class Decanat(Model):
+class Teacher(Model):
     id = fields.IntField(pk=True)
-    name = fields.CharEnumField(enum_type=ProgramName, null=False)
-    contacts = fields.CharField(max_length=50, null=False)
-    teachers = fields.ForeignKeyField('db.Teacher', related_name='decanat')
-    groups = fields.ForeignKeyField('db.Group', related_name='decanat')
+    name = fields.CharField(max_length=50)
+    program = fields.CharEnumField(enum_type=ProgramName, null=False)
+    mail = fields.CharField(max_length=50, null=False)
+    decanat = fields.ForeignKeyField('db.Decanat', related_name='teachers')
 
     def __str__(self):
         return self.name
@@ -71,3 +70,7 @@ class Decanat(Model):
 class Group(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=50, null=False)
+    decanat = fields.ForeignKeyField('db.Decanat', related_name='groups')
+
+    def __str__(self):
+        return self.name

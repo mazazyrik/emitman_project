@@ -7,13 +7,13 @@ router = APIRouter(prefix='/decanat', tags=['decanat'])
 
 
 @router.get('/all')
-async def get_decanats() -> DecanatGroupGetSchema:
+async def get_decanats() -> list[DecanatGroupGetSchema]:
     all_decs = await Decanat.all().prefetch_related('groups')
 
     decs_with_groups_list = [
         DecanatGroupGetSchema(
             name=dec.name,
-            groups=[group.name for group in dec.groups]
+            groups=[{"name": group.name} for group in dec.groups]
         ) for dec in all_decs
     ]
 
@@ -22,10 +22,10 @@ async def get_decanats() -> DecanatGroupGetSchema:
 
 @router.get('/all/{decanat_name}')
 async def get_decanat_with_group(decanat_name: str) -> DecanatGroupGetSchema:
-    dec = await Decanat.get(name=decanat_name)
+    dec = await Decanat.get(name=decanat_name).prefetch_related('groups')
     return DecanatGroupGetSchema(
         name=dec.name,
-        groups=[group.name for group in dec.groups]
+        groups=[{"name": group.name} for group in dec.groups]
     )
 
 

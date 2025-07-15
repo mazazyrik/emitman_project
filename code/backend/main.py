@@ -1,4 +1,3 @@
-import asyncio
 from contextlib import asynccontextmanager
 from typing import Annotated
 
@@ -13,13 +12,14 @@ from fastapi.responses import RedirectResponse
 
 from routers.__init__ import core_router
 from db import Admin
+from settings import settings
 
 security = HTTPBasic()
-app = FastAPI(title='EMITMAN RANEPA')
+app = FastAPI(title=settings.app_name)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,10 +29,7 @@ app.include_router(core_router, prefix='/api/v1', tags=['core'])
 
 
 async def init():
-    await Tortoise.init(
-        db_url='sqlite://db.sqlite3',
-        modules={'db': ['db']}
-    )
+    await Tortoise.init(config=settings.tortoise_orm_config)
     await Tortoise.generate_schemas()
 
 
@@ -68,4 +65,4 @@ async def custom_swagger_ui_html(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host=settings.host, port=settings.port)

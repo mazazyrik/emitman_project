@@ -7,4 +7,12 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi[all]>=0.115.13",
     "tortoise-orm>=0.25.1",
+    "aerich>=0.8.0",
+    "redis>=5.0.1",
+    "pydantic-settings>=2.0.0",
 ]
+
+[tool.aerich]
+tortoise_orm = "aerich_config.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
